@@ -12,10 +12,14 @@
 
 Timer t;
 
+stage currentStage = stageIdle;
+stage nextStage = stageIdle;
+Stage *stage = nullptr;
+
 void setup()
 {
   logger.init();
-  logger.info("Initializing controller");
+  logger.info(F("Initializing controller"));
 
   leader_sensor.init();
   film_l_sensor.init();
@@ -35,37 +39,43 @@ void setup()
 
   led_element.init();
   buzz_element.init();
+
+  stage = new StageIdle();
 }
 
 void loop()
 {
-  /*
-    if (Serial.available() > 0)
-    {
-    logger.warning("recieved string: " + Serial.readStringUntil('\n'));
-    }
-    logger.info("Stage 1. " + String(leader_sensor.isOpen()));
+  String command = "";
+  /**/
+  if (Serial.available() > 0)
+  {
+    command = Serial.readStringUntil('\n');
+  }
 
-    delay(100);
-  */
+  if (command == "start")
+  {
+    logger.info("Starting");
+    nextStage = stageStartup;
+  }
 
-  /*
-    switch (currentStage)
+  if (nextStage != currentStage)
+  {
+    delete stage;
+    switch (nextStage)
     {
       case stageIdle:
-        {
-          StageIdle s;
-          s.run();
-        }
+        stage = new StageIdle();
         break;
       case stageStartup:
-        {
-          StageStartup s;
-          s.run();
-        }
+        stage = new StageStartup();
         break;
     }
-  */
+    currentStage = nextStage;
+  }
+
+  stage->work();
+
+  //  delay(100);
 
   t.update();
 }

@@ -6,6 +6,11 @@ class Pin
 {
   public:
     Pin(int pin) : m_PinNum(pin) {};
+
+    String name() const
+    {
+      return pinNames(m_PinNum);
+    }
   protected:
     int m_PinNum;
     bool m_Init = false;
@@ -19,7 +24,7 @@ class Pin
       }
       else
       {
-        logger.error("Pin " + String(m_PinNum)  + " already initialized");
+        logger.error("Pin " + String(m_PinNum)  + F(" already initialized"));
       }
     }
 };
@@ -38,19 +43,13 @@ class OutputPin : public Pin
     {
       if (m_Init)
       {
-        if (value != m_Value)
-        {
-          digitalWrite(m_PinNum, value);
-          m_Value = value;
-        }
+        digitalWrite(m_PinNum, value);
       }
       else
       {
-        logger.error("Pin " + String(m_PinNum)  + " not initialized");
+        logger.error("Pin " + String(m_PinNum)  + F(" not initialized"));
       }
     }
-  private:
-    int m_Value = 0;
 };
 
 class InputPin : public Pin
@@ -71,7 +70,7 @@ class InputPin : public Pin
       }
       else
       {
-        logger.error("Pin " + String(m_PinNum)  + " not initialized");
+        logger.error("Pin " + String(m_PinNum)  + F(" not initialized"));
         return 0;
       }
     }
@@ -90,23 +89,26 @@ class Sensor
 
     bool isOpen() const
     {
-      return m_Inverted^m_Pin.get() == HIGH;
-    }
-
-    bool isInverted() {
-      return m_Inverted;
+      bool opened = m_Inverted ^ m_Pin.get() == HIGH;
+      if (opened != m_Opened)
+      {
+        m_Opened = opened;
+        m_Opened ? logger.debug(m_Pin.name() + F(" sensor is opened")) : logger.debug(m_Pin.name() + F(" sensor is closed"));
+      }
+      return opened;
     }
 
   private:
     InputPin m_Pin;
     bool m_Inverted;
+    mutable int m_Opened = -1;
 };
 
 class Element
 {
   public:
     Element(int pin, bool inverted = false, bool default_value = false)
-      : m_Pin(pin), m_Inverted(inverted), m_DefaultValue(default_value) {}
+      : m_Pin(pin), m_Inverted(inverted), m_DefaultValue(default_value), m_Opened(!default_value) {}
 
     void init()
     {
@@ -114,12 +116,18 @@ class Element
       setOpen(m_DefaultValue);
     }
 
-    void setOpen(bool value)
+    void setOpen(bool opened)
     {
-      m_Pin.set(m_Inverted^value == HIGH);
+      if (opened != m_Opened)
+      {
+        m_Pin.set(m_Inverted ^ opened == HIGH);
+        m_Opened = opened;
+        m_Opened ? logger.debug(m_Pin.name() + F(" element is opened")) : logger.debug(m_Pin.name() + F(" element is closed"));
+      }
     }
   private:
     OutputPin m_Pin;
     bool m_Inverted;
     bool m_DefaultValue;
+    bool m_Opened;
 };

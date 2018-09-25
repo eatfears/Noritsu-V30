@@ -10,47 +10,61 @@ enum stage
   stageSecurityTimeout
 };
 
-stage currentStage = stageStartup;
-
 class Stage
 {
-  protected:
-    Stage() {};
-    virtual ~Stage() {};
-
   public:
-    void run()
+    Stage(String name) : m_Name(name)
     {
-      while (m_StageRunning)
-      {
-        stageWork();
-      }
+      logger.notice(m_Name + F(" stage"));
+    };
+
+    ~Stage()
+    {
+      logger.trace(m_Name + F(" stage end"));
+    };
+
+    void work()
+    {
+      stageWork();
     }
 
   protected:
     virtual void stageWork()
     {
-      logger.warning("Empty work");
+      logger.warning(m_Name + F(" stage. Empty work"));
       delay(1000);
     }
-  private:
-    bool m_StageRunning = true;
+    String m_Name;
 };
+
+/****************************************************************/
 
 class StageIdle : public Stage
 {
   public:
-    StageIdle() : Stage()
-    {
-      logger.info("Idle stage");
-    }
+    StageIdle() : Stage(F("Idle")) {}
+
+    void stageWork() override {}
 };
 
 class StageStartup : public Stage
 {
   public:
-    StageStartup() : Stage()
+    StageStartup() : Stage(F("Startup"))
     {
-      logger.info("Startup stage");
+      leader_element.setOpen(true);
+      cover_lock_element.setOpen(true);
+      pressure_solenoid_element.setOpen(true);
+
+      led_element.setOpen(false);
+      buzz_element.setOpen(false);
+    }
+
+    void stageWork() override
+    {
+      film_l_element.setOpen(film_l_sensor.isOpen());
+      film_r_element.setOpen(film_r_sensor.isOpen());
+      perf_l_element.setOpen(perf_l_sensor.isOpen());
+      perf_r_element.setOpen(perf_r_sensor.isOpen());
     }
 };
