@@ -87,7 +87,7 @@ class Sensor
       m_Pin.init();
     }
 
-    bool isOpen() const
+    void read()
     {
       bool opened = m_Inverted ^ m_Pin.get() == HIGH;
       if (opened != m_Opened)
@@ -95,13 +95,17 @@ class Sensor
         m_Opened = opened;
         m_Opened ? logger.debug(m_Pin.name() + F(" sensor is opened")) : logger.debug(m_Pin.name() + F(" sensor is closed"));
       }
-      return opened;
+    }
+
+    bool isOpen() const
+    {
+      return m_Opened == 1;
     }
 
   private:
     InputPin m_Pin;
     bool m_Inverted;
-    mutable int m_Opened = -1;
+    int m_Opened = -1;
 };
 
 class Element

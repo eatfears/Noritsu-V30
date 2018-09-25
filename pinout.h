@@ -1,6 +1,6 @@
 #pragma once
 
-#define LEADER_IN_PIN             1
+#define LEADER_IN_PIN             7
 #define FILM_L_IN_PIN             2
 #define FILM_R_IN_PIN             3
 #define PERF_L_IN_PIN             4

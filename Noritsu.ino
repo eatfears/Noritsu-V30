@@ -12,8 +12,6 @@
 
 Timer t;
 
-stage currentStage = stageIdle;
-stage nextStage = stageIdle;
 Stage *stage = nullptr;
 
 void setup()
@@ -68,6 +66,9 @@ void loop()
         break;
       case stageStartup:
         stage = new StageStartup();
+        break;
+      case stageReady:
+        stage = new StageReady();
         break;
     }
     currentStage = nextStage;

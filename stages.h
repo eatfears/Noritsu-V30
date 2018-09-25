@@ -10,6 +10,9 @@ enum stage
   stageSecurityTimeout
 };
 
+stage currentStage = stageIdle;
+stage nextStage = stageIdle;
+
 class Stage
 {
   public:
@@ -25,6 +28,7 @@ class Stage
 
     void work()
     {
+      readSensors();
       stageWork();
     }
 
@@ -35,6 +39,17 @@ class Stage
       delay(1000);
     }
     String m_Name;
+
+  private:
+    void readSensors()
+    {
+      leader_sensor.read();
+      film_l_sensor.read();
+      film_r_sensor.read();
+      perf_l_sensor.read();
+      perf_r_sensor.read();
+      cover_sensor.read();
+    }
 };
 
 /****************************************************************/
@@ -57,6 +72,39 @@ class StageStartup : public Stage
       pressure_solenoid_element.setOpen(true);
 
       led_element.setOpen(false);
+      buzz_element.setOpen(false);
+
+      m_LaunchTime = millis();
+    }
+
+    void stageWork() override
+    {
+      film_l_element.setOpen(film_l_sensor.isOpen());
+      film_r_element.setOpen(film_r_sensor.isOpen());
+      perf_l_element.setOpen(perf_l_sensor.isOpen());
+      perf_r_element.setOpen(perf_r_sensor.isOpen());
+
+      if (millis() - m_LaunchTime > m_StartupTime)
+      {
+        nextStage = stageReady;
+      }
+    }
+
+private:
+    int m_LaunchTime;
+    const static int m_StartupTime = 3000;
+};
+
+class StageReady : public Stage
+{
+  public:
+    StageReady() : Stage(F("Ready"))
+    {
+      leader_element.setOpen(true);
+      cover_lock_element.setOpen(true);
+      pressure_solenoid_element.setOpen(true);
+
+      led_element.setOpen(true);
       buzz_element.setOpen(false);
     }
 
