@@ -54,6 +54,7 @@ class Stage
 
 /****************************************************************/
 
+/******* Ilde *****************/
 class StageIdle : public Stage
 {
   public:
@@ -62,6 +63,7 @@ class StageIdle : public Stage
     void stageWork() override {}
 };
 
+/******** Startup ****************/
 class StageStartup : public Stage
 {
   public:
@@ -95,24 +97,47 @@ private:
     const static int m_StartupTime = 3000;
 };
 
+/******* Ready *****************/
 class StageReady : public Stage
 {
   public:
     StageReady() : Stage(F("Ready"))
     {
-      leader_element.setOpen(true);
       cover_lock_element.setOpen(true);
       pressure_solenoid_element.setOpen(true);
 
-      led_element.setOpen(true);
-      buzz_element.setOpen(false);
+      film_l_element.setOpen(true);
+      film_r_element.setOpen(true);
+      perf_l_element.setOpen(true);
+      perf_r_element.setOpen(true);
     }
 
     void stageWork() override
     {
-      film_l_element.setOpen(film_l_sensor.isOpen());
-      film_r_element.setOpen(film_r_sensor.isOpen());
-      perf_l_element.setOpen(perf_l_sensor.isOpen());
-      perf_r_element.setOpen(perf_r_sensor.isOpen());
+
+      if (!leader_sensor.isOpen() && !cover_sensor.isOpen() )
+      {
+        nextStage = stageLeaderLoad;
+      }
+    }
+};
+
+/******** Leader loading ****************/
+class StageLeaderLoad : public Stage
+{
+  public:
+    StageLeaderLoad() : Stage(F("Leader loading"))
+    {
+      cover_lock_element.setOpen(false);
+      pressure_solenoid_element.setOpen(false);
+    }
+
+    void stageWork() override
+    {
+
+     /* if (millis() - m_LaunchTime > m_StartupTime)
+      {
+        nextStage = stageFilmLoad;
+      }*/
     }
 };

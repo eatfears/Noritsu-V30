@@ -70,6 +70,14 @@ void loop()
       case stageReady:
         stage = new StageReady();
         break;
+      case stageLeaderLoad:
+        stage = new StageLeaderLoad();
+        break;
+      default:
+        logger.critical("Unknown stage " + String(nextStage) + F(". Going idle now"));
+        stage = new StageIdle();
+        nextStage = stageIdle;
+        break;
     }
     currentStage = nextStage;
   }

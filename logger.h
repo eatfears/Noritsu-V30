@@ -1,7 +1,38 @@
 #pragma once
 
+enum logger_level
+{
+  trace,
+  debug,
+  info,
+  notice,
+  warning,
+  error,
+  critical,
+  alert
+};
+static logger_level logLevel = info;
+
+
+String levelToString(logger_level level)
+{
+  switch (level)
+  {
+    case trace: return F("trace");
+    case debug: return F("debug");
+    case info: return F("info");
+    case notice: return F("notice");
+    case warning: return F("warning");
+    case error: return F("error");
+    case critical: return F("critical");
+    case alert: return F("alert");
+  }
+  return F("logger");
+}
+
+
 #define LOGGER_FUNCTION(func) \
-  void func(String s) { log(s, #func); } \
+  void func(String s) { log(s, logger_level::func); } \
   void func(int i){ func(String(i)); }
 
 class Logger
@@ -22,9 +53,12 @@ class Logger
     LOGGER_FUNCTION(alert)
 
   private:
-    void log(const String &s, const String &level)
+    void log(const String &s, logger_level level)
     {
-      Serial.println(level + F(": ") + s);
+      if (level >= logLevel)
+      {
+        Serial.println(levelToString(level) + F(": ") + s);
+      }
     }
 };
 
