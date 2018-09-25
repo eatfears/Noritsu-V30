@@ -50,10 +50,15 @@ void loop()
     command = Serial.readStringUntil('\n');
   }
 
-  if (command == "start")
+  if (command == F("start"))
   {
-    logger.info("Starting");
+    logger.info(F("Starting"));
     nextStage = stageStartup;
+  }
+  else if (command == F("1"))
+  {
+    logger.info(F("Security"));
+    nextStage = stageSecurityTimeout;
   }
 
   if (nextStage != currentStage)
@@ -72,6 +77,12 @@ void loop()
         break;
       case stageLeaderLoad:
         stage = new StageLeaderLoad();
+        break;
+      case stageFilmLoad:
+        stage = new StageFilmLoad();
+        break;
+      case stageSecurityTimeout:
+        stage = new StageSecurityTimeout();
         break;
       default:
         logger.critical("Unknown stage " + String(nextStage) + F(". Going idle now"));

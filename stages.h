@@ -92,7 +92,7 @@ class StageStartup : public Stage
       }
     }
 
-private:
+  private:
     int m_LaunchTime;
     const static int m_StartupTime = 3000;
 };
@@ -135,9 +135,54 @@ class StageLeaderLoad : public Stage
     void stageWork() override
     {
 
-     /* if (millis() - m_LaunchTime > m_StartupTime)
+      if (leader_sensor.isOpen()) //TODO: add timer for security
       {
         nextStage = stageFilmLoad;
-      }*/
+      }
     }
+};
+
+
+/******** Film loading ****************/
+class StageFilmLoad : public Stage
+{
+  public:
+    StageFilmLoad() : Stage(F("Film loading"))
+    {
+      cover_lock_element.setOpen(false);
+      pressure_solenoid_element.setOpen(false);
+    }
+
+    void stageWork() override
+    {
+
+      if (leader_sensor.isOpen()) //TODO: add timer for security
+      {
+        nextStage = stageSecurityTimeout;
+      }
+    }
+};
+
+/******** Security timeout ****************/
+class StageSecurityTimeout : public Stage
+{
+  public:
+    StageSecurityTimeout() : Stage(F("Security timeout"))
+    {
+      cover_lock_element.setOpen(false);
+      pressure_solenoid_element.setOpen(true);
+      
+      m_LaunchTime = millis();
+    }
+
+    void stageWork() override
+    {
+      if (millis() - m_LaunchTime > m_SecurityTimeout)
+      {
+        nextStage = stageReady;
+      }
+    }
+  private:
+    int m_LaunchTime;
+    const static int m_SecurityTimeout = 3000;
 };
