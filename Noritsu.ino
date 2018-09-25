@@ -1,3 +1,5 @@
+#include "Arduino.h"
+
 #include "logger.h"
 
 #include "sensors.h"
@@ -94,7 +96,6 @@ void loop()
 
   stage->work();
 
-  //  delay(100);
-
+  delay(20);
   t.update();
 }
