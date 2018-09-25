@@ -3,15 +3,13 @@
 #include "sensors.h"
 #include "elements.h"
 
-#include "stages.h"
-
 //https://github.com/JChristensen/Timer/archive/v2.1.zip
 //https://playground.arduino.cc/code/timer
 //http://www.doctormonk.com/2012/01/arduino-timer-library.html
 #include "Timer.h"
-
 Timer t;
 
+#include "stages.h"
 Stage *stage = nullptr;
 
 void setup()
@@ -32,6 +30,7 @@ void setup()
   film_r_element.init();
   perf_l_element.init();
   perf_r_element.init();
+  cover_element.init();
   cover_lock_element.init();
   pressure_solenoid_element.init();
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "fake_leaders.h"
+
 enum stage
 {
   stageIdle,
@@ -110,6 +112,8 @@ class StageReady : public Stage
       film_r_element.setOpen(true);
       perf_l_element.setOpen(true);
       perf_r_element.setOpen(true);
+
+      startSendingFakeLeaders();
     }
 
     void stageWork() override
