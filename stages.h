@@ -96,7 +96,7 @@ class StageStartup : public Stage
 
   private:
     int m_LaunchTime;
-    const static int m_StartupTime = 3000;
+    const static int m_StartupTime = 60000;
 };
 
 /******* Ready *****************/
@@ -138,7 +138,6 @@ class StageLeaderLoad : public Stage
 
     void stageWork() override
     {
-
       if (leader_sensor.isOpen()) //TODO: add timer for security
       {
         nextStage = stageFilmLoad;
@@ -175,7 +174,7 @@ class StageSecurityTimeout : public Stage
     {
       cover_lock_element.setOpen(false);
       pressure_solenoid_element.setOpen(true);
-      
+
       m_LaunchTime = millis();
     }
 

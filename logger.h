@@ -11,7 +11,7 @@ enum logger_level
   critical,
   alert
 };
-static logger_level logLevel = info;
+static logger_level logLevel = debug;
 
 
 String levelToString(logger_level level)

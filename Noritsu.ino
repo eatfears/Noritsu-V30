@@ -40,6 +40,8 @@ void setup()
   buzz_element.init();
 
   stage = new StageIdle();
+  
+  nextStage = stageStartup;
 }
 
 void loop()
