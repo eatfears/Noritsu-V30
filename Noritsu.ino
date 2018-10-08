@@ -106,9 +106,14 @@ void loop()
     }
     currentStage = nextStage;
   }
-
   stage->work();
 
   delay(20);
   t.update();
+
+  if (nextAfter)
+  {
+    t.after(nextTimeout, nextAfter);
+    nextAfter = nullptr;
+  }
 }

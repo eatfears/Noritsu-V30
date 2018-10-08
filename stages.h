@@ -116,7 +116,7 @@ class StageReady : public Stage
       perf_l_element.setOpen(true);
       perf_r_element.setOpen(true);
 
-      startSendingFakeLeaders();
+//      startSendingFakeLeaders();
     }
 
     void stageWork() override

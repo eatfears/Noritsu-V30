@@ -9,6 +9,8 @@ const PROGMEM int fakeLeaderToFilm = FAKE_LEADER_TO_FILM_TIMEOUT;
 int fakeFilmTimeout = FAKE_FILM_TIMEOUT;
 const PROGMEM int fakeLeaderInterval = FAKE_LEADER_INTERVAL;
 
+int nextTimeout = 0;
+void(*nextAfter)(void) = 0;
 
 void sendFakeLeader();
 
@@ -19,10 +21,13 @@ void fakeFilmEnd()
   {
     logger.info(String(F("Fake film end. Sending next after ")) + String(fakeLeaderInterval) + F("ms"));
     film_l_element.setOpen(true);
-    t.after(fakeLeaderInterval, sendFakeLeader);
+
+    nextTimeout = fakeLeaderInterval;
+    nextAfter = sendFakeLeader;
   }
   else
   {
+    nextAfter = nullptr;
     logger.error(F("Fake film end. Not sending next"));
   }
 }
@@ -31,21 +36,28 @@ void sendFakeFilm()
 {
   logger.info(String(F("Sending fake film. Length: ")) + String(fakeFilmTimeout) + F("ms"));
   film_l_element.setOpen(false);
-  t.after(fakeFilmTimeout, fakeFilmEnd);
+
+  nextTimeout = fakeFilmTimeout;
+  nextAfter = fakeFilmEnd;
 }
 
 void fakeLeaderEnd()
 {
   logger.info(String(F("Fake leader end. Sending fake film after ")) + String(fakeLeaderToFilm) + F("ms"));
   leader_element.setOpen(true);
-  t.after(fakeLeaderToFilm, sendFakeFilm);
+
+  nextTimeout = fakeLeaderToFilm;
+  nextAfter = sendFakeFilm;
 }
 
 void sendFakeLeader()
 {
   logger.info(String(F("Fake leader sent. Length: ")) + String(fakeLeaderTimeout) + F("ms"));
   leader_element.setOpen(false);
-  t.after(fakeLeaderTimeout, fakeLeaderEnd);
+
+  nextTimeout = fakeLeaderTimeout;
+  nextAfter = fakeLeaderEnd;
+
 }
 
 void startSendingFakeLeaders()
