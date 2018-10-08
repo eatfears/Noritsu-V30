@@ -24,6 +24,8 @@ void setup()
   film_r_sensor.init();
   perf_l_sensor.init();
   perf_r_sensor.init();
+
+  drive_sensor.init();
   cover_sensor.init();
 
 
@@ -32,15 +34,24 @@ void setup()
   film_r_element.init();
   perf_l_element.init();
   perf_r_element.init();
+
   cover_element.init();
   cover_lock_element.init();
-  pressure_solenoid_element.init();
+
+  pressure_solenoid_l_element.init();
+  pressure_solenoid_r_element.init();
+
+  repl_cd_element.init();
+  repl_bl_element.init();
+  repl_fix_element.init();
+  repl_stb_element.init();
+  repl_wl_element.init();
 
   led_element.init();
   buzz_element.init();
 
   stage = new StageIdle();
-  
+
   nextStage = stageStartup;
 }
 

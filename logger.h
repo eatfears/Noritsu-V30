@@ -32,7 +32,7 @@ String levelToString(logger_level level)
 
 
 #define LOGGER_FUNCTION(func) \
-  void func(String s) { log(s, logger_level::func); } \
+  void func(const String &s) { log(s, logger_level::func); } \
   void func(int i){ func(String(i)); }
 
 class Logger

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fake_leaders.h"
+#include "timeouts.h"
 
 enum stage
 {
@@ -73,7 +74,8 @@ class StageStartup : public Stage
     {
       leader_element.setOpen(true);
       cover_lock_element.setOpen(true);
-      pressure_solenoid_element.setOpen(true);
+      pressure_solenoid_l_element.setOpen(true);
+      pressure_solenoid_r_element.setOpen(true);
 
       led_element.setOpen(false);
       buzz_element.setOpen(false);
@@ -96,7 +98,7 @@ class StageStartup : public Stage
 
   private:
     int m_LaunchTime;
-    const static int m_StartupTime = 60000;
+    const static int m_StartupTime = STARTUP_TIMEOUT;
 };
 
 /******* Ready *****************/
@@ -106,7 +108,8 @@ class StageReady : public Stage
     StageReady() : Stage(F("Ready"))
     {
       cover_lock_element.setOpen(true);
-      pressure_solenoid_element.setOpen(true);
+      pressure_solenoid_l_element.setOpen(true);
+      pressure_solenoid_r_element.setOpen(true);
 
       film_l_element.setOpen(true);
       film_r_element.setOpen(true);
@@ -133,7 +136,8 @@ class StageLeaderLoad : public Stage
     StageLeaderLoad() : Stage(F("Leader loading"))
     {
       cover_lock_element.setOpen(false);
-      pressure_solenoid_element.setOpen(false);
+      pressure_solenoid_l_element.setOpen(false);
+      pressure_solenoid_r_element.setOpen(false);
     }
 
     void stageWork() override
@@ -153,7 +157,8 @@ class StageFilmLoad : public Stage
     StageFilmLoad() : Stage(F("Film loading"))
     {
       cover_lock_element.setOpen(false);
-      pressure_solenoid_element.setOpen(false);
+      pressure_solenoid_l_element.setOpen(false);
+      pressure_solenoid_r_element.setOpen(false);
     }
 
     void stageWork() override
@@ -173,7 +178,8 @@ class StageSecurityTimeout : public Stage
     StageSecurityTimeout() : Stage(F("Security timeout"))
     {
       cover_lock_element.setOpen(false);
-      pressure_solenoid_element.setOpen(true);
+      pressure_solenoid_l_element.setOpen(true);
+      pressure_solenoid_r_element.setOpen(true);
 
       m_LaunchTime = millis();
     }
@@ -187,5 +193,5 @@ class StageSecurityTimeout : public Stage
     }
   private:
     int m_LaunchTime;
-    const static int m_SecurityTimeout = 3000;
+    const static int m_SecurityTimeout = SECURITY_TIMEOUT;
 };

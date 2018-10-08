@@ -1,11 +1,13 @@
 #pragma once
 
+#include "timeouts.h"
+
 bool fakeLeadersActive = false;
 
-const PROGMEM int fakeLeaderTimeout = 5000;
-const PROGMEM int fakeLeaderToFilm = 1000;
-int fakeFilmTimeout = 2000;
-const PROGMEM int fakeLeaderInterval = 3000;
+const PROGMEM int fakeLeaderTimeout = FAKE_LEADER_TIMEOUT;
+const PROGMEM int fakeLeaderToFilm = FAKE_LEADER_TO_FILM_TIMEOUT;
+int fakeFilmTimeout = FAKE_FILM_TIMEOUT;
+const PROGMEM int fakeLeaderInterval = FAKE_LEADER_INTERVAL;
 
 
 void sendFakeLeader();
