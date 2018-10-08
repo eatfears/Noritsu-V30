@@ -1,4 +1,4 @@
-#define STARTUP_TIMEOUT             6000
+#define STARTUP_TIMEOUT             60000
 #define SECURITY_TIMEOUT            3000
 #define FAKE_LEADER_TIMEOUT         5000
 #define FAKE_LEADER_TO_FILM_TIMEOUT 1000

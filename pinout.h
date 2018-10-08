@@ -21,11 +21,10 @@
 #define PRESSURE_SOLENOID_L_OUT_PIN 15
 #define PRESSURE_SOLENOID_R_OUT_PIN 16
 
-#define REPL_CD_OUT_PIN             0
-#define REPL_BL_OUT_PIN             1
-#define REPL_FIX_OUT_PIN            2
-#define REPL_STB_OUT_PIN            3
-#define REPL_WL_OUT_PIN             4
+#define REPL_CD_OUT_PIN             1
+#define REPL_BL_OUT_PIN             2
+#define REPL_FIX_OUT_PIN            3
+#define REPL_STB_OUT_PIN            4
 
 #define LED_OUT_PIN                 17
 #define BUZZ_OUT_PIN                2
@@ -73,7 +72,6 @@ String i2cPinNames(int pin)
     case REPL_BL_OUT_PIN: return F("Replenisher BL"); break;
     case REPL_FIX_OUT_PIN: return F("Replenisher FIX"); break;
     case REPL_STB_OUT_PIN: return F("Replenisher STB"); break;
-    case REPL_WL_OUT_PIN: return F("Replenisher WL"); break;
 
     case LED_OUT_PIN: return F("Led"); break;
 

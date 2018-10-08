@@ -43,7 +43,7 @@ class DriveSensor
       static int i = 0;
       int interval = ms - m_LastMillis;
 
-      if (interval > 0)
+      if (interval > 100)
       {
         m_Times[i] = interval;
         i++; if (i >= NUM) i = 0;

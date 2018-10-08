@@ -48,7 +48,6 @@ void setup()
   repl_bl_element.init();
   repl_fix_element.init();
   repl_stb_element.init();
-  repl_wl_element.init();
 
   led_element.init();
   buzz_element.init();
@@ -85,6 +84,8 @@ void loop()
     static bool fff = false;
     fff = !fff;
     test_element.setOpen(fff);
+    leader_element.setOpen(fff);
+    repl_cd_element.setOpen(fff);
   }
 
   if (nextStage != currentStage)
