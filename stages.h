@@ -47,10 +47,13 @@ class Stage
     void readSensors()
     {
       leader_sensor.read();
+
       film_l_sensor.read();
       film_r_sensor.read();
       perf_l_sensor.read();
       perf_r_sensor.read();
+
+      drive_sensor.read();
       cover_sensor.read();
     }
 };
@@ -116,7 +119,7 @@ class StageReady : public Stage
       perf_l_element.setOpen(true);
       perf_r_element.setOpen(true);
 
-//      startSendingFakeLeaders();
+      //      startSendingFakeLeaders();
     }
 
     void stageWork() override

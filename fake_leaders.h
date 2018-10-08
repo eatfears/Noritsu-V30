@@ -16,7 +16,6 @@ void sendFakeLeader();
 
 void fakeFilmEnd()
 {
-
   if (fakeLeadersActive)
   {
     logger.info(String(F("Fake film end. Sending next after ")) + String(fakeLeaderInterval) + F("ms"));

@@ -24,3 +24,5 @@ Element repl_wl_element(REPL_WL_OUT_PIN, true);
 
 Element led_element(LED_OUT_PIN, true);
 Element buzz_element(BUZZ_OUT_PIN, false);
+
+Element test_element(TEST_OUT_PIN, false);

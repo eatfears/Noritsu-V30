@@ -14,6 +14,9 @@ Timer t;
 #include "stages.h"
 Stage *stage = nullptr;
 
+#include "drive_sensor.h"
+DriveSensor driveSensor;
+
 void setup()
 {
   logger.init();
@@ -50,6 +53,8 @@ void setup()
   led_element.init();
   buzz_element.init();
 
+  test_element.init();
+
   stage = new StageIdle();
 
   nextStage = stageStartup;
@@ -73,6 +78,13 @@ void loop()
   {
     logger.info(F("Security"));
     nextStage = stageSecurityTimeout;
+  }
+  else if (command == F("q"))
+  {
+    logger.info(F("Changing test"));
+    static bool fff = false;
+    fff = !fff;
+    test_element.setOpen(fff);
   }
 
   if (nextStage != currentStage)

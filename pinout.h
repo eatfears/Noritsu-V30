@@ -30,6 +30,8 @@
 #define LED_OUT_PIN                 17
 #define BUZZ_OUT_PIN                2
 
+#define TEST_OUT_PIN                11
+
 
 String pinNames(int pin)
 {
@@ -47,7 +49,9 @@ String pinNames(int pin)
     case PERF_R_OUT_PIN: return F("Perf R"); break;
 
     case BUZZ_OUT_PIN: return F("Buzz"); break;
-    
+
+    case TEST_OUT_PIN: return F("Test 11"); break;
+
     default: return String(F("Unknown uno pin ")) + String(pin); break;
   }
 }
@@ -58,13 +62,13 @@ String i2cPinNames(int pin)
   {
     case LEADER_IN_PIN: return F("Leader"); break;
     case COVER_IN_PIN: return F("Cover"); break;
-    
+
     case LEADER_OUT_PIN: return F("Leader"); break;
     case COVER_OUT_PIN: return F("Cover"); break;
     case COVER_LOCK_OUT_PIN: return F("Cover lock"); break;
     case PRESSURE_SOLENOID_L_OUT_PIN: return F("Pressure solenoid L"); break;
     case PRESSURE_SOLENOID_R_OUT_PIN: return F("Pressure solenoid R"); break;
-    
+
     case REPL_CD_OUT_PIN: return F("Replenisher CD"); break;
     case REPL_BL_OUT_PIN: return F("Replenisher BL"); break;
     case REPL_FIX_OUT_PIN: return F("Replenisher FIX"); break;
@@ -72,7 +76,7 @@ String i2cPinNames(int pin)
     case REPL_WL_OUT_PIN: return F("Replenisher WL"); break;
 
     case LED_OUT_PIN: return F("Led"); break;
-    
+
     default: return String(F("Unknown i2c pin ")) + String(pin); break;
   }
 }

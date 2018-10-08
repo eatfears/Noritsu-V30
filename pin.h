@@ -169,7 +169,7 @@ class InputPinI2C : public InputPin
         return 0;
       }
     }
-    
+
     String name() const
     {
       return i2cPinNames(m_PinNum);
