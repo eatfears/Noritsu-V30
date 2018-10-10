@@ -29,7 +29,7 @@
 #define LED_OUT_PIN                 17
 #define BUZZ_OUT_PIN                2
 
-#define TEST_OUT_PIN                11
+#define TEST_OUT_PIN                10
 
 
 String pinNames(int pin)
@@ -49,7 +49,7 @@ String pinNames(int pin)
 
     case BUZZ_OUT_PIN: return F("Buzz"); break;
 
-    case TEST_OUT_PIN: return F("Test 11"); break;
+    case TEST_OUT_PIN: return F("Test 10"); break;
 
     default: return String(F("Unknown uno pin ")) + String(pin); break;
   }

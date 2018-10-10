@@ -10,7 +10,6 @@ class DriveSensor
     {
       m_LastMillis = millis();
       attachInterrupt(digitalPinToInterrupt(DRIVE_IN_PIN), blinks, RISING);
-      //attachInterrupt(digitalPinToInterrupt(DRIVE_IN_PIN), blinks, CHANGE);
     }
     ~DriveSensor()
     {
@@ -28,10 +27,12 @@ class DriveSensor
       return ret / NUM;
     }
 
-    static unsigned long getCounter() {
+    static unsigned long getCounter()
+    {
       return m_Counter;
     }
-    static void resetCounter() {
+    static void resetCounter()
+    {
       m_Counter = 0;
     }
 
