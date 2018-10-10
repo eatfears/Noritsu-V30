@@ -3,23 +3,23 @@
 #define FILM_L_IN_PIN               8
 #define FILM_R_IN_PIN               6
 #define PERF_L_IN_PIN               4
-#define PERF_R_IN_PIN               0
+#define PERF_R_IN_PIN               12
 #define DRIVE_IN_PIN                3
 
-#define LEADER_IN_PIN               10
-#define COVER_IN_PIN                12
+#define LEADER_IN_PIN               12
+#define COVER_IN_PIN                11
 
 
 #define FILM_L_OUT_PIN              9
 #define FILM_R_OUT_PIN              7
 #define PERF_L_OUT_PIN              5
-#define PERF_R_OUT_PIN              1
+#define PERF_R_OUT_PIN              13
 
-#define LEADER_OUT_PIN              11
-#define COVER_OUT_PIN               13
-#define COVER_LOCK_OUT_PIN          14
-#define PRESSURE_SOLENOID_L_OUT_PIN 15
-#define PRESSURE_SOLENOID_R_OUT_PIN 16
+#define LEADER_OUT_PIN              15
+#define COVER_OUT_PIN               14
+#define COVER_LOCK_OUT_PIN          7
+#define PRESSURE_SOLENOID_L_OUT_PIN 5
+#define PRESSURE_SOLENOID_R_OUT_PIN 6
 
 #define REPL_CD_OUT_PIN             1
 #define REPL_BL_OUT_PIN             2

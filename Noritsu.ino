@@ -11,6 +11,7 @@
 #include "Timer.h"
 Timer t;
 
+#include "pump.h"
 #include "stages.h"
 Stage *stage = nullptr;
 
@@ -86,6 +87,30 @@ void loop()
     test_element.setOpen(fff);
     leader_element.setOpen(fff);
     repl_cd_element.setOpen(fff);
+  }
+  else if (command == F("a"))
+  {
+    repl_cd_element.fire();
+  }
+  else if (command == F("s"))
+  {
+    repl_bl_element.fire();
+  }
+  else if (command == F("d"))
+  {
+    repl_fix_element.fire();
+  }
+  else if (command == F("f"))
+  {
+    repl_stb_element.fire();
+  }
+  else if (command == F("z"))
+  {
+    static bool fff = false;
+    fff = !fff;
+    cover_lock_element.setOpen(fff);
+    pressure_solenoid_l_element.setOpen(fff);
+    pressure_solenoid_r_element.setOpen(fff);
   }
 
   if (nextStage != currentStage)

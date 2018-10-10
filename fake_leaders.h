@@ -34,7 +34,10 @@ void fakeFilmEnd()
 void sendFakeFilm()
 {
   logger.info(String(F("Sending fake film. Length: ")) + String(fakeFilmTimeout) + F("ms"));
-  film_l_element.setOpen(false);
+  if (fakeFilmTimeout > 0)
+  {
+    film_l_element.setOpen(false);
+  }
 
   nextTimeout = fakeFilmTimeout;
   nextAfter = fakeFilmEnd;

@@ -257,7 +257,7 @@ class Element
         m_Opened ? logger.debug(m_Pin->name() + F(" element is opened")) : logger.debug(m_Pin->name() + F(" element is closed"));
       }
     }
-  private:
+  protected:
     OutputPin *m_Pin;
     bool m_Inverted;
     bool m_DefaultValue;

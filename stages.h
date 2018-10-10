@@ -33,6 +33,11 @@ class Stage
     {
       readSensors();
       stageWork();
+
+      repl_cd_element.checkClose();
+      repl_bl_element.checkClose();
+      repl_fix_element.checkClose();
+      repl_stb_element.checkClose();
     }
 
   protected:
@@ -75,8 +80,8 @@ class StageStartup : public Stage
   public:
     StageStartup() : Stage(F("Startup"))
     {
-      leader_element.setOpen(true);
       cover_lock_element.setOpen(true);
+      
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
 
@@ -122,7 +127,6 @@ class StageReady : public Stage
 
     void stageWork() override
     {
-
       if (!leader_sensor.isOpen() && !cover_sensor.isOpen() )
       {
         nextStage = stageLeaderLoad;
@@ -195,6 +199,6 @@ class StageSecurityTimeout : public Stage
       }
     }
   private:
-    int m_LaunchTime;
+    unsigned long m_LaunchTime;
     const static int m_SecurityTimeout = SECURITY_TIMEOUT;
 };
