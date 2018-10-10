@@ -13,10 +13,11 @@ Timer t;
 
 #include "pump.h"
 #include "stages.h"
+#include "drive_sensor.h"
+
+DriveSensor driveSensor;
 Stage *stage = nullptr;
 
-#include "drive_sensor.h"
-DriveSensor driveSensor;
 
 void setup()
 {

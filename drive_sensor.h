@@ -1,3 +1,5 @@
+#pragma once
+
 #include "pinout.h"
 #include "logger.h"
 

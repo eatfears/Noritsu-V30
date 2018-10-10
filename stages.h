@@ -2,6 +2,10 @@
 
 #include "fake_leaders.h"
 #include "timeouts.h"
+#include "drive_sensor.h"
+
+
+extern DriveSensor driveSensor;
 
 enum stage
 {
@@ -81,7 +85,7 @@ class StageStartup : public Stage
     StageStartup() : Stage(F("Startup"))
     {
       cover_lock_element.setOpen(true);
-      
+
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
 
@@ -95,7 +99,7 @@ class StageStartup : public Stage
       film_r_element.setOpen(film_r_sensor.isOpen());
       perf_l_element.setOpen(perf_l_sensor.isOpen());
       perf_r_element.setOpen(perf_r_sensor.isOpen());
-      
+
       cover_element.setOpen(cover_sensor.isOpen());
       leader_element.setOpen(leader_sensor.isOpen());
 
@@ -113,7 +117,10 @@ class StageReady : public Stage
     StageReady() : Stage(F("Ready"))
     {
       cover_element.setOpen(false);
+      leader_element.setOpen(false);
+
       cover_lock_element.setOpen(true);
+
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
 
@@ -121,8 +128,6 @@ class StageReady : public Stage
       film_r_element.setOpen(true);
       perf_l_element.setOpen(true);
       perf_r_element.setOpen(true);
-
-      //      startSendingFakeLeaders();
     }
 
     void stageWork() override
@@ -144,11 +149,13 @@ class StageLeaderLoad : public Stage
       cover_lock_element.setOpen(false);
       pressure_solenoid_l_element.setOpen(false);
       pressure_solenoid_r_element.setOpen(false);
+
+      driveSensor.resetCounter();
     }
 
     void stageWork() override
     {
-      if (leader_sensor.isOpen()) //TODO: add timer for security
+      if (leader_sensor.isOpen())
       {
         nextStage = stageFilmLoad;
       }
@@ -162,7 +169,6 @@ class StageFilmLoad : public Stage
   public:
     StageFilmLoad() : Stage(F("Film loading"))
     {
-      cover_element.setOpen(false);
       cover_lock_element.setOpen(false);
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
@@ -170,7 +176,7 @@ class StageFilmLoad : public Stage
 
     void stageWork() override
     {
-      if (leader_sensor.isOpen()) //TODO: add timer for security
+      if (film_l_sensor.isOpen() && film_r_sensor.isOpen())
       {
         nextStage = stageSecurityTimeout;
       }
@@ -183,7 +189,6 @@ class StageSecurityTimeout : public Stage
   public:
     StageSecurityTimeout() : Stage(F("Security timeout"))
     {
-      cover_element.setOpen(false);
       cover_lock_element.setOpen(false);
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
