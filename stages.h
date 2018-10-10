@@ -82,8 +82,6 @@ class StageStartup : public Stage
 
       led_element.setOpen(false);
       buzz_element.setOpen(false);
-
-      m_LaunchTime = millis();
     }
 
     void stageWork() override
@@ -92,16 +90,15 @@ class StageStartup : public Stage
       film_r_element.setOpen(film_r_sensor.isOpen());
       perf_l_element.setOpen(perf_l_sensor.isOpen());
       perf_r_element.setOpen(perf_r_sensor.isOpen());
+      
+      cover_element.setOpen(cover_sensor.isOpen());
+      leader_element.setOpen(leader_sensor.isOpen());
 
-      if (millis() - m_LaunchTime > m_StartupTime)
+      if (!leader_sensor.isOpen() && !cover_sensor.isOpen() )
       {
-        nextStage = stageReady;
+        nextStage = stageLeaderLoad;
       }
     }
-
-  private:
-    int m_LaunchTime;
-    const static int m_StartupTime = STARTUP_TIMEOUT;
 };
 
 /******* Ready *****************/
@@ -110,6 +107,7 @@ class StageReady : public Stage
   public:
     StageReady() : Stage(F("Ready"))
     {
+      cover_element.setOpen(false);
       cover_lock_element.setOpen(true);
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
@@ -138,6 +136,7 @@ class StageLeaderLoad : public Stage
   public:
     StageLeaderLoad() : Stage(F("Leader loading"))
     {
+      cover_element.setOpen(false);
       cover_lock_element.setOpen(false);
       pressure_solenoid_l_element.setOpen(false);
       pressure_solenoid_r_element.setOpen(false);
@@ -159,14 +158,14 @@ class StageFilmLoad : public Stage
   public:
     StageFilmLoad() : Stage(F("Film loading"))
     {
+      cover_element.setOpen(false);
       cover_lock_element.setOpen(false);
-      pressure_solenoid_l_element.setOpen(false);
-      pressure_solenoid_r_element.setOpen(false);
+      pressure_solenoid_l_element.setOpen(true);
+      pressure_solenoid_r_element.setOpen(true);
     }
 
     void stageWork() override
     {
-
       if (leader_sensor.isOpen()) //TODO: add timer for security
       {
         nextStage = stageSecurityTimeout;
@@ -180,6 +179,7 @@ class StageSecurityTimeout : public Stage
   public:
     StageSecurityTimeout() : Stage(F("Security timeout"))
     {
+      cover_element.setOpen(false);
       cover_lock_element.setOpen(false);
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
