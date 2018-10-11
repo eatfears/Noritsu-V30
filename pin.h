@@ -179,8 +179,8 @@ class InputPinI2C : public InputPin
 class Sensor
 {
   public:
-    Sensor(int pin, bool i2c, bool inverted = false)
-      : m_Inverted(inverted)
+    Sensor(int pin, bool i2c, bool inverted = false, bool logging =  true)
+      : m_Inverted(inverted), m_Logging(logging)
     {
       if (i2c)
       {
@@ -207,7 +207,10 @@ class Sensor
       if (opened != m_Opened)
       {
         m_Opened = opened;
-        m_Opened ? logger.debug(m_Pin->name() + F(" sensor is opened")) : logger.debug(m_Pin->name() + F(" sensor is closed"));
+        if (m_Logging)
+        {
+          m_Opened ? logger.debug(m_Pin->name() + F(" sensor is opened")) : logger.debug(m_Pin->name() + F(" sensor is closed"));
+        }
       }
     }
 
@@ -219,6 +222,7 @@ class Sensor
   private:
     InputPin *m_Pin;
     bool m_Inverted;
+    bool m_Logging;
     int m_Opened = -1;
 };
 

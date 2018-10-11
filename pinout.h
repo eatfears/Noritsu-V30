@@ -8,7 +8,7 @@
 
 #define LEADER_IN_PIN               12
 #define COVER_IN_PIN                11
-
+#define IK_LED_IN_PIN               10
 
 #define FILM_L_OUT_PIN              9
 #define FILM_R_OUT_PIN              7
@@ -61,6 +61,7 @@ String i2cPinNames(int pin)
   {
     case LEADER_IN_PIN: return F("Leader"); break;
     case COVER_IN_PIN: return F("Cover"); break;
+    case IK_LED_IN_PIN: return F("IK led"); break;
 
     case LEADER_OUT_PIN: return F("Leader"); break;
     case COVER_OUT_PIN: return F("Cover"); break;

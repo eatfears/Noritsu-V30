@@ -10,5 +10,7 @@ Sensor film_r_sensor(FILM_R_IN_PIN, false);
 Sensor perf_l_sensor(PERF_L_IN_PIN, false);
 Sensor perf_r_sensor(PERF_R_IN_PIN, false);
 
-Sensor drive_sensor(DRIVE_IN_PIN, false);
+Sensor drive_sensor(DRIVE_IN_PIN, false, false, false);
 Sensor cover_sensor(COVER_IN_PIN, true, true);
+
+Sensor ik_led_sensor(IK_LED_IN_PIN, true);

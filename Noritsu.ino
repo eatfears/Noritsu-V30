@@ -33,6 +33,7 @@ void setup()
   drive_sensor.init();
   cover_sensor.init();
 
+  ik_led_sensor.init();
 
   leader_element.init();
   film_l_element.init();
@@ -113,6 +114,18 @@ void loop()
     pressure_solenoid_l_element.setOpen(fff);
     pressure_solenoid_r_element.setOpen(fff);
   }
+  else if (command == F("c"))
+  {
+    startSendingFakeLeaders();
+  }
+  else if (command == F("x"))
+  {
+    stopSendingFakeLeaders();
+  }
+  else if (command == F("v"))
+  {
+    logger.info(String(driveSensor.getCounter()) + String(F(" holes")));
+  }
 
   if (nextStage != currentStage)
   {
@@ -130,6 +143,9 @@ void loop()
         break;
       case stageLeaderLoad:
         stage = new StageLeaderLoad();
+        break;
+      case stageLeaderEnd:
+        stage = new StageLeaderEnd();
         break;
       case stageFilmLoad:
         stage = new StageFilmLoad();

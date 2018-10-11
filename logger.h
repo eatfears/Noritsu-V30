@@ -57,7 +57,7 @@ class Logger
     {
       if (level >= logLevel)
       {
-        Serial.println(levelToString(level) + F(": ") + s);
+        Serial.println(String(millis()) + String(F(". ")) + levelToString(level) + String(F(": ")) + s);
       }
     }
 };

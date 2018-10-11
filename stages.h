@@ -13,6 +13,7 @@ enum stage
   stageStartup,
   stageReady,
   stageLeaderLoad,
+  stageLeaderEnd,
   stageFilmLoad,
   stageSecurityTimeout
 };
@@ -42,6 +43,21 @@ class Stage
       repl_bl_element.checkClose();
       repl_fix_element.checkClose();
       repl_stb_element.checkClose();
+
+      if (currentStage == stageStartup)
+      {
+        film_l_element.setOpen(film_l_sensor.isOpen());
+        film_r_element.setOpen(film_r_sensor.isOpen());
+        perf_l_element.setOpen(perf_l_sensor.isOpen());
+        perf_r_element.setOpen(perf_r_sensor.isOpen());
+      }
+      else
+      {
+        film_l_element.setOpen(ik_led_sensor.isOpen());
+        film_r_element.setOpen(ik_led_sensor.isOpen());
+        perf_l_element.setOpen(ik_led_sensor.isOpen());
+        perf_r_element.setOpen(ik_led_sensor.isOpen());
+      }
     }
 
   protected:
@@ -64,6 +80,8 @@ class Stage
 
       drive_sensor.read();
       cover_sensor.read();
+
+      ik_led_sensor.read();
     }
 };
 
@@ -95,11 +113,6 @@ class StageStartup : public Stage
 
     void stageWork() override
     {
-      film_l_element.setOpen(film_l_sensor.isOpen());
-      film_r_element.setOpen(film_r_sensor.isOpen());
-      perf_l_element.setOpen(perf_l_sensor.isOpen());
-      perf_r_element.setOpen(perf_r_sensor.isOpen());
-
       cover_element.setOpen(cover_sensor.isOpen());
       leader_element.setOpen(leader_sensor.isOpen());
 
@@ -117,7 +130,6 @@ class StageReady : public Stage
     StageReady() : Stage(F("Ready"))
     {
       cover_element.setOpen(false);
-      leader_element.setOpen(false);
 
       cover_lock_element.setOpen(true);
 
@@ -151,15 +163,43 @@ class StageLeaderLoad : public Stage
       pressure_solenoid_r_element.setOpen(false);
 
       driveSensor.resetCounter();
+
+      //startSendingFakeLeaders();
     }
 
     void stageWork() override
     {
       if (leader_sensor.isOpen())
       {
+        nextStage = stageLeaderEnd;
+      }
+    }
+};
+
+
+/******** Leader end ****************/
+class StageLeaderEnd: public Stage
+{
+  public:
+    StageLeaderEnd() : Stage(String(F("Leader end. Holes: ")) + String(driveSensor.getCounter()))
+    {
+      cover_element.setOpen(false);
+      cover_lock_element.setOpen(false);
+      pressure_solenoid_l_element.setOpen(true);
+      pressure_solenoid_r_element.setOpen(true);
+
+      m_LaunchHoles = driveSensor.getCounter();
+    }
+
+    void stageWork() override
+    {
+      if (driveSensor.getCounter() - m_LaunchHoles > LEADER_END_HOLES)
+      {
         nextStage = stageFilmLoad;
       }
     }
+
+    unsigned long m_LaunchHoles;
 };
 
 
@@ -193,17 +233,16 @@ class StageSecurityTimeout : public Stage
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
 
-      m_LaunchTime = millis();
+      m_LaunchHoles = driveSensor.getCounter();
     }
 
     void stageWork() override
     {
-      if (millis() - m_LaunchTime > m_SecurityTimeout)
+      if (driveSensor.getCounter() - m_LaunchHoles > SECURITY_HOLES)
       {
-        nextStage = stageReady;
+        nextStage = stageFilmLoad;
       }
     }
-  private:
-    unsigned long m_LaunchTime;
-    const static int m_SecurityTimeout = SECURITY_TIMEOUT;
+
+    unsigned long m_LaunchHoles;
 };

@@ -7,9 +7,9 @@ bool fakeLeadersActive = false;
 const PROGMEM int fakeLeaderTimeout = FAKE_LEADER_TIMEOUT;
 const PROGMEM int fakeLeaderToFilm = FAKE_LEADER_TO_FILM_TIMEOUT;
 int fakeFilmTimeout = FAKE_FILM_TIMEOUT;
-const PROGMEM int fakeLeaderInterval = FAKE_LEADER_INTERVAL;
+const PROGMEM unsigned long fakeLeaderInterval = FAKE_LEADER_INTERVAL;
 
-int nextTimeout = 0;
+unsigned long nextTimeout = 0;
 void(*nextAfter)(void) = 0;
 
 void sendFakeLeader();
@@ -19,7 +19,7 @@ void fakeFilmEnd()
   if (fakeLeadersActive)
   {
     logger.info(String(F("Fake film end. Sending next after ")) + String(fakeLeaderInterval) + F("ms"));
-    film_l_element.setOpen(true);
+    //film_l_element.setOpen(true);
 
     nextTimeout = fakeLeaderInterval;
     nextAfter = sendFakeLeader;

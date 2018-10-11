@@ -51,7 +51,7 @@ class DriveSensor
         m_Times[i] = interval;
         i++; if (i >= NUM) i = 0;
 
-        logger.info(String(F("Counter: ")) + String(m_Counter) + F(". Interval: ") + String(getInterval()) + F(". Interval last: ") + String(interval));
+//        logger.info(String(F("Counter: ")) + String(m_Counter) + F(". Interval: ") + String(getInterval()) + F(". Interval last: ") + String(interval));
 
         m_LastMillis = ms;
       }
