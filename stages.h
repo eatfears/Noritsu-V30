@@ -4,6 +4,7 @@
 #include "timeouts.h"
 #include "drive_sensor.h"
 #include "stages_enum.h"
+#include "signal.h"
 
 
 extern DriveSensor driveSensor;
@@ -48,6 +49,8 @@ class Stage
         perf_l_element.setOpen(ik_led_sensor.isOpen());
         perf_r_element.setOpen(ik_led_sensor.isOpen());
       }
+
+      Signal::check();
     }
 
   protected:
@@ -123,6 +126,8 @@ class StageReady : public Stage
 
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
+
+      Signal::beep();
     }
 
     void stageWork() override

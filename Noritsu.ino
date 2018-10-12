@@ -118,6 +118,7 @@ void loop()
   }
   if (command == F("x"))
   {
+    Signal::beep();
     FakeLeaders::stop();
   }
 //  if (command == F("v"))
@@ -163,7 +164,7 @@ void loop()
   }
   p_stage->work();
 
-  delay(100);
+  delay(10);
 
   static void(*handler)(void) = 0;
   static unsigned long handlerTimer;

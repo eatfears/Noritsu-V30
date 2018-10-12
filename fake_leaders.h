@@ -57,7 +57,7 @@ class FakeLeaders
       else
       {
         m_nextAfter = nullptr;
-        logger.error(F("Fake film end. Not sending next"));
+        logger.notice(F("Fake film end. Not sending next"));
         m_launchOnStart = true;
       }
     }
