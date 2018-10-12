@@ -22,7 +22,5 @@ Pump repl_bl_element(REPL_BL_OUT_PIN, BL_TIMEOUT);
 Pump repl_fix_element(REPL_FIX_OUT_PIN, FIX_TIMEOUT);
 Pump repl_stb_element(REPL_STB_OUT_PIN, STB_TIMEOUT);
 
-Element led_element(LED_OUT_PIN, true);
-Element buzz_element(BUZZ_OUT_PIN, false);
-
-Element test_element(TEST_OUT_PIN, false);
+//Element led_element(LED_OUT_PIN, true);
+//Element buzz_element(BUZZ_OUT_PIN, false);

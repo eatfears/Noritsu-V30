@@ -14,23 +14,23 @@ class Signal
     {
       if (millis() - m_Start < 200)
       {
-        led_element.setOpen(true);
-        buzz_element.setOpen(true);
+        digitalWrite(LED_OUT_PIN, HIGH);
+        digitalWrite(BUZZ_OUT_PIN, HIGH);
       }
       else if (millis() - m_Start < 500)
       {
-        led_element.setOpen(false);
-        buzz_element.setOpen(false);
+        digitalWrite(LED_OUT_PIN, LOW);
+        digitalWrite(BUZZ_OUT_PIN, LOW);
       }
       else if (millis() - m_Start < 1000)
       {
-        led_element.setOpen(true);
-        buzz_element.setOpen(true);
+        digitalWrite(LED_OUT_PIN, HIGH);
+        digitalWrite(BUZZ_OUT_PIN, HIGH);
       }
       else if (millis() - m_Start > 1000)
       {
-        led_element.setOpen(false);
-        buzz_element.setOpen(false);
+        digitalWrite(LED_OUT_PIN, LOW);
+        digitalWrite(BUZZ_OUT_PIN, LOW);
       }
     }
   private:

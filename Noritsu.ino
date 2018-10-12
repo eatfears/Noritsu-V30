@@ -52,18 +52,16 @@ void setup()
   repl_fix_element.init();
   repl_stb_element.init();
 
-  led_element.init();
-  buzz_element.init();
-
-  test_element.init();
+  pinMode(LED_OUT_PIN, OUTPUT);
+  pinMode(BUZZ_OUT_PIN, OUTPUT);
 
   p_stage = new StageIdle();
 
   nextStage = stageStartup;
 }
 
-//#define COMMANDS
-#define STAGES
+#define COMMANDS
+//#define STAGES
 
 void loop()
 {
@@ -119,7 +117,9 @@ void loop()
     */
     if (command == F("c"))
     {
+      Serial.println(m_fakeLeadersActive);
       FakeLeaders::start();
+      Serial.println(m_fakeLeadersActive);
     }
     if (command == F("x"))
     {
@@ -192,7 +192,7 @@ void loop()
       handler();
       handler = nullptr;
     }
-    Serial.println(m_fakeLeadersActive);
+    //    Serial.println(m_fakeLeadersActive);
     //   logger.notice(String(driveSensor.getCounter()));
   }
 }

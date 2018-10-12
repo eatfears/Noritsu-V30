@@ -99,9 +99,6 @@ class StageStartup : public Stage
 
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
-
-      led_element.setOpen(false);
-      buzz_element.setOpen(false);
     }
 
     void stageWork() override
