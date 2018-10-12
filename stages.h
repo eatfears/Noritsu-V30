@@ -218,6 +218,8 @@ class StageFilmLoad : public Stage
         repl_bl_element.fire();
         repl_fix_element.fire();
         repl_stb_element.fire();
+
+        driveSensor.resetPumpCounter();
       }
 
       if (film_l_sensor.isOpen() && film_r_sensor.isOpen())

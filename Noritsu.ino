@@ -62,125 +62,137 @@ void setup()
   nextStage = stageStartup;
 }
 
+//#define COMMANDS
+#define STAGES
+
 void loop()
 {
-  String command = "";
-  if (Serial.available() > 0)
+#ifdef COMMANDS
   {
-    command = Serial.readStringUntil('\n');
+    String command = "";
+    if (Serial.available() > 0)
+    {
+      command = Serial.readStringUntil('\n');
+    }
+
+    //  if (command == F("1"))
+    //  {
+    //    logger.info(F("Security"));
+    //    nextStage = stageSecurityTimeout;
+    //  }
+    /*
+      else if (command == F("q"))
+      {
+      logger.info(F("Changing test"));
+      static bool fff = false;
+      fff = !fff;
+      test_element.setOpen(fff);
+      leader_element.setOpen(fff);
+      repl_cd_element.setOpen(fff);
+      }
+      else if (command == F("a"))
+      {
+        repl_cd_element.fire();
+      }
+      else if (command == F("s"))
+      {
+        repl_bl_element.fire();
+      }
+      else if (command == F("d"))
+      {
+        repl_fix_element.fire();
+      }
+      else if (command == F("f"))
+
+      {
+        repl_stb_element.fire();
+      }
+
+      else if (command == F("z"))
+      {
+      static bool fff = false;
+      fff = !fff;
+      cover_lock_element.setOpen(fff);
+      pressure_solenoid_l_element.setOpen(fff);
+      pressure_solenoid_r_element.setOpen(fff);
+      }
+    */
+    if (command == F("c"))
+    {
+      FakeLeaders::start();
+    }
+    if (command == F("x"))
+    {
+      Signal::beep();
+      FakeLeaders::stop();
+    }
+    //    if (command == F("v"))
+    //    {
+    //      logger.info(driveSensor.getCounter());
+    //      logger.info(driveSensor.getPumpCounter());
+    //    }
   }
+#endif
 
-//  if (command == F("1"))
-//  {
-//    logger.info(F("Security"));
-//    nextStage = stageSecurityTimeout;
-//  }
-  /*
-    else if (command == F("q"))
-    {
-    logger.info(F("Changing test"));
-    static bool fff = false;
-    fff = !fff;
-    test_element.setOpen(fff);
-    leader_element.setOpen(fff);
-    repl_cd_element.setOpen(fff);
-    }
-    else if (command == F("a"))
-    {
-      repl_cd_element.fire();
-    }
-    else if (command == F("s"))
-    {
-      repl_bl_element.fire();
-    }
-    else if (command == F("d"))
-    {
-      repl_fix_element.fire();
-    }
-    else if (command == F("f"))
-
-    {
-      repl_stb_element.fire();
-    }
-
-    else if (command == F("z"))
-    {
-    static bool fff = false;
-    fff = !fff;
-    cover_lock_element.setOpen(fff);
-    pressure_solenoid_l_element.setOpen(fff);
-    pressure_solenoid_r_element.setOpen(fff);
-    }
-  */
-  if (command == F("c"))
+#ifdef STAGES
   {
-    FakeLeaders::start();
-  }
-  if (command == F("x"))
-  {
-    Signal::beep();
-    FakeLeaders::stop();
-  }
-//  if (command == F("v"))
-//  {
-//    logger.info(driveSensor.getCounter());
-//    logger.info(driveSensor.getPumpCounter());
-//  }
-
-
-  if (nextStage != currentStage)
-  {
-    delete p_stage;
-    switch (nextStage)
+    if (nextStage != currentStage)
     {
-      case stageIdle:
-        p_stage = new StageIdle();
-        break;
-      case stageStartup:
-        p_stage = new StageStartup();
-        break;
-      case stageReady:
-        p_stage = new StageReady();
-        break;
-      case stageLeaderLoad:
-        p_stage = new StageLeaderLoad();
-        break;
-      case stageLeaderEnd:
-        p_stage = new StageLeaderEnd();
-        break;
-      case stageFilmLoad:
-        p_stage = new StageFilmLoad();
-        break;
-      case stageSecurityTimeout:
-        p_stage = new StageSecurityTimeout();
-        break;
-      default:
-        logger.critical(String(F("Unknown stage ")) + String(nextStage) + String(F(". Going idle now")));
-        p_stage = new StageIdle();
-        nextStage = stageIdle;
-        break;
+      delete p_stage;
+      switch (nextStage)
+      {
+        case stageIdle:
+          p_stage = new StageIdle();
+          break;
+        case stageStartup:
+          p_stage = new StageStartup();
+          break;
+        case stageReady:
+          p_stage = new StageReady();
+          break;
+        case stageLeaderLoad:
+          p_stage = new StageLeaderLoad();
+          break;
+        case stageLeaderEnd:
+          p_stage = new StageLeaderEnd();
+          break;
+        case stageFilmLoad:
+          p_stage = new StageFilmLoad();
+          break;
+        case stageSecurityTimeout:
+          p_stage = new StageSecurityTimeout();
+          break;
+        default:
+          logger.critical(String(F("Unknown stage ")) + String(nextStage) + String(F(". Going idle now")));
+          p_stage = new StageIdle();
+          nextStage = stageIdle;
+          break;
+      }
+      currentStage = nextStage;
     }
-    currentStage = nextStage;
+    p_stage->work();
   }
-  p_stage->work();
+#endif
 
   delay(10);
-
-  static void(*handler)(void) = 0;
-  static unsigned long handlerTimer;
-
-  if (FakeLeaders::m_nextAfter)
   {
-    handlerTimer = millis();
-    handler = FakeLeaders::m_nextAfter;
+    static void(*handler)(void) = 0;
+    static unsigned long handlerTimer;
 
-    FakeLeaders::m_nextAfter = nullptr;
+    if (FakeLeaders::m_nextAfter)
+    {
+      handlerTimer = millis();
+      handler = FakeLeaders::m_nextAfter;
+
+      FakeLeaders::m_nextAfter = nullptr;
+    }
+
+    if (millis() - handlerTimer > FakeLeaders::m_nextTimeout && handler)
+    {
+      handler();
+      handler = nullptr;
+    }
+    Serial.println(m_fakeLeadersActive);
+    //   logger.notice(String(driveSensor.getCounter()));
   }
-
-  if (millis() - handlerTimer > FakeLeaders::m_nextTimeout && handler)
-  {
-    handler();
-    handler = nullptr;
-  }
-
 }

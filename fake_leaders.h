@@ -2,6 +2,7 @@
 
 #include "timeouts.h"
 
+bool m_fakeLeadersActive = false;
 
 class FakeLeaders
 {
@@ -33,7 +34,7 @@ class FakeLeaders
       }
       else
       {
-        logger.warning(F("Fake leaders not running"));
+        //logger.warning(F("Fake leaders not running"));
       }
     }
 
@@ -42,7 +43,8 @@ class FakeLeaders
 
 
   private:
-    static bool m_fakeLeadersActive;
+//  public:
+//    static bool m_fakeLeadersActive;
     static bool m_launchOnStart;
 
     static void fakeFilmEnd()
@@ -101,5 +103,4 @@ class FakeLeaders
 unsigned long FakeLeaders::m_nextTimeout = 0;
 void(*FakeLeaders::m_nextAfter)(void) = 0;
 
-bool FakeLeaders::m_fakeLeadersActive = false;
 bool FakeLeaders::m_launchOnStart = true;

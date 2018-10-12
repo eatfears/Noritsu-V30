@@ -50,7 +50,7 @@ class DriveSensor
       m_PumpCounter = 0;
     }
 
-  private:
+  public:
     static void handler()
     {
       m_Counter++;
