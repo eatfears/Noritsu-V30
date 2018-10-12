@@ -5,18 +5,18 @@
 #include "sensors.h"
 #include "elements.h"
 
-//https://github.com/JChristensen/Timer/archive/v2.1.zip
-//https://playground.arduino.cc/code/timer
-//http://www.doctormonk.com/2012/01/arduino-timer-library.html
-#include "Timer.h"
-Timer t;
+
+int m_nextTimeout = 0;
 
 #include "pump.h"
 #include "stages.h"
 #include "drive_sensor.h"
 
 DriveSensor driveSensor;
-Stage *stage = nullptr;
+
+stage currentStage = stageIdle;
+stage nextStage = stageIdle;
+Stage *p_stage = nullptr;
 
 
 void setup()
@@ -57,7 +57,7 @@ void setup()
 
   test_element.init();
 
-  stage = new StageIdle();
+  p_stage = new StageIdle();
 
   nextStage = stageStartup;
 }
@@ -65,110 +65,121 @@ void setup()
 void loop()
 {
   String command = "";
-  /**/
   if (Serial.available() > 0)
   {
     command = Serial.readStringUntil('\n');
   }
 
-  if (command == F("start"))
-  {
-    logger.info(F("Starting"));
-    nextStage = stageStartup;
-  }
-  else if (command == F("1"))
-  {
-    logger.info(F("Security"));
-    nextStage = stageSecurityTimeout;
-  }
-  else if (command == F("q"))
-  {
+//  if (command == F("1"))
+//  {
+//    logger.info(F("Security"));
+//    nextStage = stageSecurityTimeout;
+//  }
+  /*
+    else if (command == F("q"))
+    {
     logger.info(F("Changing test"));
     static bool fff = false;
     fff = !fff;
     test_element.setOpen(fff);
     leader_element.setOpen(fff);
     repl_cd_element.setOpen(fff);
-  }
-  else if (command == F("a"))
-  {
-    repl_cd_element.fire();
-  }
-  else if (command == F("s"))
-  {
-    repl_bl_element.fire();
-  }
-  else if (command == F("d"))
-  {
-    repl_fix_element.fire();
-  }
-  else if (command == F("f"))
-  {
-    repl_stb_element.fire();
-  }
-  else if (command == F("z"))
-  {
+    }
+    else if (command == F("a"))
+    {
+      repl_cd_element.fire();
+    }
+    else if (command == F("s"))
+    {
+      repl_bl_element.fire();
+    }
+    else if (command == F("d"))
+    {
+      repl_fix_element.fire();
+    }
+    else if (command == F("f"))
+
+    {
+      repl_stb_element.fire();
+    }
+
+    else if (command == F("z"))
+    {
     static bool fff = false;
     fff = !fff;
     cover_lock_element.setOpen(fff);
     pressure_solenoid_l_element.setOpen(fff);
     pressure_solenoid_r_element.setOpen(fff);
-  }
-  else if (command == F("c"))
+    }
+  */
+  if (command == F("c"))
   {
-    startSendingFakeLeaders();
+    FakeLeaders::start();
   }
-  else if (command == F("x"))
+  if (command == F("x"))
   {
-    stopSendingFakeLeaders();
+    FakeLeaders::stop();
   }
-  else if (command == F("v"))
-  {
-    logger.info(String(driveSensor.getCounter()) + String(F(" holes")));
-  }
+//  if (command == F("v"))
+//  {
+//    logger.info(driveSensor.getCounter());
+//    logger.info(driveSensor.getPumpCounter());
+//  }
+
 
   if (nextStage != currentStage)
   {
-    delete stage;
+    delete p_stage;
     switch (nextStage)
     {
       case stageIdle:
-        stage = new StageIdle();
+        p_stage = new StageIdle();
         break;
       case stageStartup:
-        stage = new StageStartup();
+        p_stage = new StageStartup();
         break;
       case stageReady:
-        stage = new StageReady();
+        p_stage = new StageReady();
         break;
       case stageLeaderLoad:
-        stage = new StageLeaderLoad();
+        p_stage = new StageLeaderLoad();
         break;
       case stageLeaderEnd:
-        stage = new StageLeaderEnd();
+        p_stage = new StageLeaderEnd();
         break;
       case stageFilmLoad:
-        stage = new StageFilmLoad();
+        p_stage = new StageFilmLoad();
         break;
       case stageSecurityTimeout:
-        stage = new StageSecurityTimeout();
+        p_stage = new StageSecurityTimeout();
         break;
       default:
-        logger.critical("Unknown stage " + String(nextStage) + F(". Going idle now"));
-        stage = new StageIdle();
+        logger.critical(String(F("Unknown stage ")) + String(nextStage) + String(F(". Going idle now")));
+        p_stage = new StageIdle();
         nextStage = stageIdle;
         break;
     }
     currentStage = nextStage;
   }
-  stage->work();
+  p_stage->work();
 
-  delay(20);
-  t.update();
+  delay(100);
 
-  if (nextAfter)
+  static void(*handler)(void) = 0;
+  static unsigned long handlerTimer;
+
+  if (FakeLeaders::m_nextAfter)
   {
-    t.after(nextTimeout, nextAfter);
-    nextAfter = nullptr;
+    handlerTimer = millis();
+    handler = FakeLeaders::m_nextAfter;
+
+    FakeLeaders::m_nextAfter = nullptr;
   }
+
+  if (millis() - handlerTimer > FakeLeaders::m_nextTimeout && handler)
+  {
+    handler();
+    handler = nullptr;
+  }
+
 }

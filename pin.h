@@ -18,7 +18,7 @@ class Pin
       return pinNames(m_PinNum);
     }
   protected:
-    int m_PinNum;
+    const int m_PinNum;
     bool m_Init = false;
 };
 
@@ -221,8 +221,8 @@ class Sensor
 
   private:
     InputPin *m_Pin;
-    bool m_Inverted;
-    bool m_Logging;
+    const bool m_Inverted;
+    const bool m_Logging;
     int m_Opened = -1;
 };
 
@@ -263,7 +263,7 @@ class Element
     }
   protected:
     OutputPin *m_Pin;
-    bool m_Inverted;
-    bool m_DefaultValue;
+    const bool m_Inverted;
+    const bool m_DefaultValue;
     bool m_Opened;
 };

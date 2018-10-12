@@ -3,23 +3,13 @@
 #include "fake_leaders.h"
 #include "timeouts.h"
 #include "drive_sensor.h"
+#include "stages_enum.h"
 
 
 extern DriveSensor driveSensor;
+extern stage currentStage;
+extern stage nextStage;
 
-enum stage
-{
-  stageIdle,
-  stageStartup,
-  stageReady,
-  stageLeaderLoad,
-  stageLeaderEnd,
-  stageFilmLoad,
-  stageSecurityTimeout
-};
-
-stage currentStage = stageIdle;
-stage nextStage = stageIdle;
 
 class Stage
 {
@@ -129,21 +119,19 @@ class StageReady : public Stage
   public:
     StageReady() : Stage(F("Ready"))
     {
-      cover_element.setOpen(false);
-
       cover_lock_element.setOpen(true);
 
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
-
-      film_l_element.setOpen(true);
-      film_r_element.setOpen(true);
-      perf_l_element.setOpen(true);
-      perf_r_element.setOpen(true);
     }
 
     void stageWork() override
     {
+      if (driveSensor.getCounter() > PROCESS_HOLES)
+      {
+        FakeLeaders::stop();
+      }
+
       if (!leader_sensor.isOpen() && !cover_sensor.isOpen() )
       {
         nextStage = stageLeaderLoad;
@@ -159,12 +147,13 @@ class StageLeaderLoad : public Stage
     {
       cover_element.setOpen(false);
       cover_lock_element.setOpen(false);
+
       pressure_solenoid_l_element.setOpen(false);
       pressure_solenoid_r_element.setOpen(false);
 
       driveSensor.resetCounter();
 
-      //startSendingFakeLeaders();
+      FakeLeaders::start();
     }
 
     void stageWork() override
@@ -207,7 +196,7 @@ class StageLeaderEnd: public Stage
 class StageFilmLoad : public Stage
 {
   public:
-    StageFilmLoad() : Stage(F("Film loading"))
+    StageFilmLoad() : Stage(String(F("Film loading. Holes: ")) + String(driveSensor.getCounter()))
     {
       cover_lock_element.setOpen(false);
       pressure_solenoid_l_element.setOpen(true);
@@ -216,6 +205,16 @@ class StageFilmLoad : public Stage
 
     void stageWork() override
     {
+      if (driveSensor.getPumpCounter() > PUMP_INTERVAL_HOLES)
+      {
+        logger.info(F("Pump"));
+
+        repl_cd_element.fire();
+        repl_bl_element.fire();
+        repl_fix_element.fire();
+        repl_stb_element.fire();
+      }
+
       if (film_l_sensor.isOpen() && film_r_sensor.isOpen())
       {
         nextStage = stageSecurityTimeout;
@@ -227,7 +226,7 @@ class StageFilmLoad : public Stage
 class StageSecurityTimeout : public Stage
 {
   public:
-    StageSecurityTimeout() : Stage(F("Security timeout"))
+    StageSecurityTimeout() : Stage(String(F("Security timeout. Holes: ")) + String(driveSensor.getCounter()))
     {
       cover_lock_element.setOpen(false);
       pressure_solenoid_l_element.setOpen(true);
@@ -240,7 +239,7 @@ class StageSecurityTimeout : public Stage
     {
       if (driveSensor.getCounter() - m_LaunchHoles > SECURITY_HOLES)
       {
-        nextStage = stageFilmLoad;
+        nextStage = stageReady;
       }
     }
 

@@ -33,7 +33,8 @@ String levelToString(logger_level level)
 
 #define LOGGER_FUNCTION(func) \
   void func(const String &s) { log(s, logger_level::func); } \
-  void func(int i){ func(String(i)); }
+  void func(int i){ func(String(i)); } \
+  void func(unsigned long i){ func(String(i)); }
 
 class Logger
 {
@@ -57,8 +58,21 @@ class Logger
     {
       if (level >= logLevel)
       {
-        Serial.println(String(millis()) + String(F(". ")) + levelToString(level) + String(F(": ")) + s);
+        Serial.println(timeToString(millis()) + String(F(". ")) + levelToString(level) + String(F(": ")) + s);
       }
+    }
+
+    char * timeToString(unsigned long t)
+    {
+      static char str[12];
+      int ms = t % 1000;
+      t = t / 1000;
+      long h = t / 3600;
+      t = t % 3600;
+      int m = t / 60;
+      int s = t % 60;
+      sprintf(str, "%04ld:%02d:%02d.%03d", h, m, s, ms);
+      return str;
     }
 };
 
