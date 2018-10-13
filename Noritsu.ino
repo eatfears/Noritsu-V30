@@ -61,7 +61,7 @@ void setup()
 }
 
 #define COMMANDS
-//#define STAGES
+#define STAGES
 
 void loop()
 {
@@ -73,64 +73,58 @@ void loop()
       command = Serial.readStringUntil('\n');
     }
 
-    //  if (command == F("1"))
-    //  {
-    //    logger.info(F("Security"));
-    //    nextStage = stageSecurityTimeout;
-    //  }
-    /*
-      else if (command == F("q"))
-      {
+    if (command == F("1"))
+    {
+      logger.info(F("Security"));
+      nextStage = stageSecurityTimeout;
+    }
+    else if (command == F("q"))
+    {
       logger.info(F("Changing test"));
       static bool fff = false;
       fff = !fff;
-      test_element.setOpen(fff);
       leader_element.setOpen(fff);
       repl_cd_element.setOpen(fff);
-      }
-      else if (command == F("a"))
-      {
-        repl_cd_element.fire();
-      }
-      else if (command == F("s"))
-      {
-        repl_bl_element.fire();
-      }
-      else if (command == F("d"))
-      {
-        repl_fix_element.fire();
-      }
-      else if (command == F("f"))
+    }
+    else if (command == F("a"))
+    {
+      repl_cd_element.fire();
+    }
+    else if (command == F("s"))
+    {
+      repl_bl_element.fire();
+    }
+    else if (command == F("d"))
+    {
+      repl_fix_element.fire();
+    }
+    else if (command == F("f"))
 
-      {
-        repl_stb_element.fire();
-      }
+    {
+      repl_stb_element.fire();
+    }
 
-      else if (command == F("z"))
-      {
+    else if (command == F("z"))
+    {
       static bool fff = false;
       fff = !fff;
       cover_lock_element.setOpen(fff);
       pressure_solenoid_l_element.setOpen(fff);
       pressure_solenoid_r_element.setOpen(fff);
-      }
-    */
+    }
     if (command == F("c"))
     {
-      Serial.println(m_fakeLeadersActive);
       FakeLeaders::start();
-      Serial.println(m_fakeLeadersActive);
     }
     if (command == F("x"))
     {
       Signal::beep();
       FakeLeaders::stop();
     }
-    //    if (command == F("v"))
-    //    {
-    //      logger.info(driveSensor.getCounter());
-    //      logger.info(driveSensor.getPumpCounter());
-    //    }
+    if (command == F("v"))
+    {
+      logger.info(String(driveSensor.getCounter()) + String(F(" Pump: ")) + String(driveSensor.getPumpCounter()));
+    }
   }
 #endif
 

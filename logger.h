@@ -62,9 +62,9 @@ class Logger
       }
     }
 
-    char * timeToString(unsigned long t)
+    char* timeToString(unsigned long t)
     {
-      static char str[12];
+      static char str[18];
       int ms = t % 1000;
       t = t / 1000;
       long h = t / 3600;
