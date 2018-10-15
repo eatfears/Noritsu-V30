@@ -125,11 +125,13 @@ class StageReady : public Stage
       pressure_solenoid_r_element.setOpen(true);
 
       Signal::beep();
+
+      m_LaunchHoles = driveSensor.getCounter();
     }
 
     void stageWork() override
     {
-      if (driveSensor.getCounter() > PROCESS_HOLES)
+      if (driveSensor.getCounter() - m_LaunchHoles > PROCESS_HOLES)
       {
         FakeLeaders::stop();
       }
@@ -139,6 +141,7 @@ class StageReady : public Stage
         nextStage = stageLeaderLoad;
       }
     }
+    unsigned long m_LaunchHoles;
 };
 
 /******** Leader loading ****************/
@@ -189,7 +192,6 @@ class StageLeaderEnd: public Stage
         nextStage = stageFilmLoad;
       }
     }
-
     unsigned long m_LaunchHoles;
 };
 
