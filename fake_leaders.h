@@ -2,19 +2,18 @@
 
 #include "timeouts.h"
 
-bool m_fakeLeadersActive = false;
 
 class FakeLeaders
 {
   public:
     static void start()
     {
-      if (!m_fakeLeadersActive)
+      if (!m_FakeLeadersActive)
       {
-        m_fakeLeadersActive = true;
+        m_FakeLeadersActive = true;
         logger.notice(F("Fake leaders started"));
 
-        if (m_launchOnStart)
+        if (m_LaunchOnStart)
         {
           sendFakeLeader();
         }
@@ -27,9 +26,9 @@ class FakeLeaders
 
     static void stop()
     {
-      if (m_fakeLeadersActive)
+      if (m_FakeLeadersActive)
       {
-        m_fakeLeadersActive = false;
+        m_FakeLeadersActive = false;
         logger.notice(F("Fake leaders stopped"));
       }
       else
@@ -38,29 +37,28 @@ class FakeLeaders
       }
     }
 
-    static unsigned long m_nextTimeout;
-    static void(*m_nextAfter)(void);
+    static unsigned long m_NextTimeout;
+    static void(*m_NextAfter)(void);
 
 
   private:
-//  public:
-//    static bool m_fakeLeadersActive;
-    static bool m_launchOnStart;
+    static bool m_FakeLeadersActive;
+    static bool m_LaunchOnStart;
 
     static void fakeFilmEnd()
     {
-      if (m_fakeLeadersActive)
+      if (m_FakeLeadersActive)
       {
         logger.info(String(F("Fake film end. Sending next after ")) + String(FAKE_LEADER_INTERVAL) + F("ms"));
 
-        m_nextTimeout = FAKE_LEADER_INTERVAL;
-        m_nextAfter = sendFakeLeader;
+        m_NextTimeout = FAKE_LEADER_INTERVAL;
+        m_NextAfter = sendFakeLeader;
       }
       else
       {
-        m_nextAfter = nullptr;
+        m_NextAfter = nullptr;
         logger.notice(F("Fake film end. Not sending next"));
-        m_launchOnStart = true;
+        m_LaunchOnStart = true;
       }
     }
 
@@ -72,8 +70,8 @@ class FakeLeaders
         film_l_element.setOpen(false);
       }
 
-      m_nextTimeout = FAKE_FILM_TIMEOUT;
-      m_nextAfter = fakeFilmEnd;
+      m_NextTimeout = FAKE_FILM_TIMEOUT;
+      m_NextAfter = fakeFilmEnd;
     }
 
     static void fakeLeaderEnd()
@@ -81,26 +79,26 @@ class FakeLeaders
       logger.info(String(F("Fake leader end. Sending fake film after ")) + String(FAKE_LEADER_TO_FILM_TIMEOUT) + F("ms"));
       leader_element.setOpen(true);
 
-      m_nextTimeout = FAKE_LEADER_TO_FILM_TIMEOUT;
-      m_nextAfter = sendFakeFilm;
+      m_NextTimeout = FAKE_LEADER_TO_FILM_TIMEOUT;
+      m_NextAfter = sendFakeFilm;
     }
 
     static void sendFakeLeader()
     {
-      if (m_fakeLeadersActive)
+      if (m_FakeLeadersActive)
       {
         logger.info(String(F("Fake leader sent. Length: ")) + String(FAKE_LEADER_TIMEOUT) + F("ms"));
         leader_element.setOpen(false);
 
-        m_nextTimeout = FAKE_LEADER_TIMEOUT;
-        m_nextAfter = fakeLeaderEnd;
+        m_NextTimeout = FAKE_LEADER_TIMEOUT;
+        m_NextAfter = fakeLeaderEnd;
 
-        m_launchOnStart = false;
+        m_LaunchOnStart = false;
       }
     }
 };
 
-unsigned long FakeLeaders::m_nextTimeout = 0;
-void(*FakeLeaders::m_nextAfter)(void) = 0;
-
-bool FakeLeaders::m_launchOnStart = true;
+unsigned long FakeLeaders::m_NextTimeout = 0;
+void(*FakeLeaders::m_NextAfter)(void) = 0;
+bool FakeLeaders::m_FakeLeadersActive = false;
+bool FakeLeaders::m_LaunchOnStart = true;

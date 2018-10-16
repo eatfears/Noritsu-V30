@@ -1,7 +1,7 @@
 #define LEADER_END_HOLES            110
 #define SECURITY_HOLES              130
 #define PROCESS_HOLES               3900
-#define PUMP_INTERVAL_HOLES         825         // 1650 film holes 40ml cd = 21 sec
+#define PUMP_INTERVAL_HOLES         1650        // 1650 film holes 40ml cd = 21 sec, 36*135 film. twice at one load
 
 #define FAKE_LEADER_TIMEOUT         15*1000     // 15 sec
 #define FAKE_LEADER_TO_FILM_TIMEOUT 5*1000      // 5 sec

@@ -3,7 +3,7 @@
 #include "fake_leaders.h"
 #include "timeouts.h"
 #include "drive_sensor.h"
-#include "stages_enum.h"
+#include "enums.h"
 #include "signal.h"
 
 
@@ -125,6 +125,7 @@ class StageReady : public Stage
       pressure_solenoid_r_element.setOpen(true);
 
       Signal::beep();
+      digitalWrite(LED_OUT_PIN, HIGH);
 
       m_LaunchHoles = driveSensor.getCounter();
     }
@@ -157,6 +158,7 @@ class StageLeaderLoad : public Stage
       pressure_solenoid_r_element.setOpen(false);
 
       driveSensor.resetCounter();
+      digitalWrite(LED_OUT_PIN, LOW);
 
       FakeLeaders::start();
     }
@@ -205,6 +207,11 @@ class StageFilmLoad : public Stage
       cover_lock_element.setOpen(false);
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
+
+      m_LaunchTime = millis();
+
+      filmTypeL = film_none;
+      filmTypeR = film_none;
     }
 
     void stageWork() override
@@ -221,11 +228,72 @@ class StageFilmLoad : public Stage
         driveSensor.resetPumpCounter();
       }
 
+      if (millis() - m_LaunchTime < 3000)
+      {
+        m_FilmClosedL |= !film_l_sensor.isOpen();
+        m_FilmClosedR |= !film_r_sensor.isOpen();
+        m_PerfOpenedL |= perf_l_sensor.isOpen();
+        m_PerfOpenedR |= perf_r_sensor.isOpen();
+        m_PerfClosedL |= !perf_l_sensor.isOpen();
+        m_PerfClosedR |= !perf_r_sensor.isOpen();
+
+        if (m_FilmClosedL && filmTypeL == film_none) filmTypeL = film_135;
+        if (m_FilmClosedR && filmTypeR == film_none) filmTypeR = film_135;
+      }
+      else if (!m_GotFilms)
+      {
+        m_GotFilms = true;
+
+        if (m_FilmClosedL)
+        {
+          if (m_PerfClosedL && m_PerfOpenedL)
+          {
+            filmTypeL = film_135;
+          }
+          else if (m_PerfClosedL && !m_PerfOpenedL)
+          {
+            filmTypeL = film_120;
+          }
+          else if (!m_PerfClosedL && m_PerfOpenedL)
+          {
+            filmTypeL = film_110;
+          }
+        }
+        if (m_FilmClosedR)
+        {
+          if (m_PerfClosedR && m_PerfOpenedR)
+          {
+            filmTypeR = film_135;
+          }
+          else if (m_PerfClosedR && !m_PerfOpenedR)
+          {
+            filmTypeR = film_120;
+          }
+          else if (!m_PerfClosedR && m_PerfOpenedR)
+          {
+            filmTypeR = film_110;
+          }
+        }
+        logger.info(String(F("Processing. L: ")) + filmTypeToString(filmTypeL) + String(F(", R: ")) + filmTypeToString(filmTypeR));
+      }
+
       if (film_l_sensor.isOpen() && film_r_sensor.isOpen())
       {
         nextStage = stageSecurityTimeout;
       }
     }
+
+  private:
+    unsigned long m_LaunchTime;
+    bool m_GotFilms = false;
+
+    bool m_FilmClosedL = false;
+    bool m_PerfOpenedL = false;
+    bool m_PerfClosedL = false;
+
+    bool m_FilmClosedR = false;
+    bool m_PerfOpenedR = false;
+    bool m_PerfClosedR = false;
 };
 
 /******** Security timeout ****************/

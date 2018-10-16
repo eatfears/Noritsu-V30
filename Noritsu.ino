@@ -78,6 +78,11 @@ void loop()
       logger.info(F("Security"));
       nextStage = stageSecurityTimeout;
     }
+    else if (command == F("2"))
+    {
+      logger.info(F("Film"));
+      nextStage = stageFilmLoad;
+    }
     else if (command == F("q"))
     {
       logger.info(F("Changing test"));
@@ -123,7 +128,7 @@ void loop()
     }
     if (command == F("v"))
     {
-      logger.info(String(driveSensor.getCounter()) + String(F(" Pump: ")) + String(driveSensor.getPumpCounter()));
+      logger.info(String(F("Leader: ")) + String(driveSensor.getCounter()) + String(F(" Pump: ")) + String(driveSensor.getPumpCounter()));
     }
   }
 #endif
@@ -173,20 +178,18 @@ void loop()
     static void(*handler)(void) = 0;
     static unsigned long handlerTimer;
 
-    if (FakeLeaders::m_nextAfter)
+    if (FakeLeaders::m_NextAfter)
     {
       handlerTimer = millis();
-      handler = FakeLeaders::m_nextAfter;
+      handler = FakeLeaders::m_NextAfter;
 
-      FakeLeaders::m_nextAfter = nullptr;
+      FakeLeaders::m_NextAfter = nullptr;
     }
 
-    if (millis() - handlerTimer > FakeLeaders::m_nextTimeout && handler)
+    if (millis() - handlerTimer > FakeLeaders::m_NextTimeout && handler)
     {
       handler();
       handler = nullptr;
     }
-    //    Serial.println(m_fakeLeadersActive);
-    //   logger.notice(String(driveSensor.getCounter()));
   }
 }

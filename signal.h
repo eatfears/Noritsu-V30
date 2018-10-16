@@ -14,22 +14,18 @@ class Signal
     {
       if (millis() - m_Start < 200)
       {
-        digitalWrite(LED_OUT_PIN, HIGH);
         digitalWrite(BUZZ_OUT_PIN, HIGH);
       }
       else if (millis() - m_Start < 500)
       {
-        digitalWrite(LED_OUT_PIN, LOW);
         digitalWrite(BUZZ_OUT_PIN, LOW);
       }
       else if (millis() - m_Start < 1000)
       {
-        digitalWrite(LED_OUT_PIN, HIGH);
         digitalWrite(BUZZ_OUT_PIN, HIGH);
       }
       else if (millis() - m_Start > 1000)
       {
-        digitalWrite(LED_OUT_PIN, LOW);
         digitalWrite(BUZZ_OUT_PIN, LOW);
       }
     }
