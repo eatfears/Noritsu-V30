@@ -26,7 +26,7 @@
 #define REPL_FIX_OUT_PIN            3
 #define REPL_STB_OUT_PIN            4
 
-#define LED_OUT_PIN                 17
+#define LED_OUT_PIN                 13
 #define BUZZ_OUT_PIN                2
 
 #define TEST_OUT_PIN                10

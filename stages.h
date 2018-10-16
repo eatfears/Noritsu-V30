@@ -99,6 +99,8 @@ class StageStartup : public Stage
 
       pressure_solenoid_l_element.setOpen(true);
       pressure_solenoid_r_element.setOpen(true);
+
+      ioport.digitalWrite(LED_OUT_PIN, HIGH);
     }
 
     void stageWork() override
@@ -125,7 +127,7 @@ class StageReady : public Stage
       pressure_solenoid_r_element.setOpen(true);
 
       Signal::beep();
-      digitalWrite(LED_OUT_PIN, HIGH);
+      ioport.digitalWrite(LED_OUT_PIN, HIGH);
 
       m_LaunchHoles = driveSensor.getCounter();
     }
@@ -158,7 +160,7 @@ class StageLeaderLoad : public Stage
       pressure_solenoid_r_element.setOpen(false);
 
       driveSensor.resetCounter();
-      digitalWrite(LED_OUT_PIN, LOW);
+      ioport.digitalWrite(LED_OUT_PIN, LOW);
 
       FakeLeaders::start();
     }

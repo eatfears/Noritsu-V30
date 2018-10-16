@@ -52,7 +52,7 @@ void setup()
   repl_fix_element.init();
   repl_stb_element.init();
 
-  pinMode(LED_OUT_PIN, OUTPUT);
+  ioport.pinMode(LED_OUT_PIN, OUTPUT);
   pinMode(BUZZ_OUT_PIN, OUTPUT);
 
   p_stage = new StageIdle();
@@ -173,7 +173,7 @@ void loop()
   }
 #endif
 
-  delay(10);
+  delay(5);
   {
     static void(*handler)(void) = 0;
     static unsigned long handlerTimer;
