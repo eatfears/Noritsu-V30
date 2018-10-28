@@ -95,6 +95,10 @@ class FakeLeaders
 
         m_LaunchOnStart = false;
       }
+      else 
+      {
+        m_LaunchOnStart = true;
+      }
     }
 };
 
